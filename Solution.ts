@@ -29,3 +29,68 @@ Puedes anadir logs de info, warning y error en las llamadas, para un mejor contr
 
 Diseño por Contrato (Opcional):
 Puedes anadir validaciones en precondiciones o postcondiciones como lo veas necesario*/
+
+//eliminamos any para darles valores especificos que queremos que nuestra clase devuelva
+
+
+interface IEmailService {
+    user: User;
+    sendEmail(name: String, email: string): void;
+}
+class User {
+    name: string;
+    email: string;
+
+    constructor(name: string, email: string) {
+        this.name = name;
+        this.email = email;
+    }
+}
+class Book {
+    title: string;
+    author: string;
+    ISBN: string;
+
+    constructor(title: string, author: string, ISBN: string) {
+        this.title = title;
+        this.author = author;
+        this.ISBN = ISBN;
+    }
+}
+class Library {
+    user:User[] = [];
+    books: Book[] = [];
+
+    addBook(book: Book) {
+        this.books.push(book);
+    }
+
+    removeBook(ISBN: string) {
+        const index = this.books.findIndex(b => b.ISBN === ISBN);
+        if (index !== -1) {
+            this.books.splice(index, 1);
+        }
+    }
+    findBooks(query: string) {
+        return this.books.filter(b => b.title.includes(query) || b.author.includes(query) || b.ISBN === query);
+    }
+
+}
+class LibraryManager {
+    library: Library;
+    emailService: IEmailService;
+    user: User;
+    constructor(library: Library, emailService: IEmailService) {
+        this.library = library;
+        this.emailService = emailService;
+    }
+    addBook(title: string, author: string, ISBN: string, name: string, email: string) {
+        const book = new Book(title, author, ISBN);
+        this.library.addBook(book);
+        //this.library.user.forEach(name => name.sendEmail(book));
+    }
+    removeBook(ISBN: string) {
+        this.library.removeBook(ISBN);
+    }
+}
+
